@@ -164,3 +164,7 @@ plot_temp <- same100 %>%
 rm(unparsed_bit, basics, crew, ratings, movies_0, same100,
    plot_genre, plot_release, plot_runtime, plot_same,
    plot_temp, plot_vote_rating, plot_vote_rating_over500k)
+
+
+# Save objects for other .R files -----------------------------------------
+save(movies, movies_crew, file = "objs")
