@@ -1,10 +1,13 @@
+# Packages ----------------------------------------------------------------
 library(shiny)
 library(tidyverse)
 library(rlang)
+library(DT)
 
 
-# Load dataset objects
+# Objects -----------------------------------------------------------------
 load("objs")
+
 
 # Create a test set
 set.seed(1)
@@ -37,7 +40,8 @@ genre_var <- unique(test$genre)
 
 # UI ----------------------------------------------------------------------
 ui <- navbarPage(title = "Movie Browser", 
-                 
+
+# Tab 1 -------------------------------------------------------------------
                  tabPanel(title = "Plots",
                           fluidPage(
                             sidebarLayout(
@@ -45,7 +49,8 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 textInput(inputId = "plot_title_top", 
                                           label = "Top Plot Title", 
-                                          placeholder = "Enter text for plot title."),
+                                          placeholder = "Enter text for plot title.",
+                                          value = "Facetted on genre"),
                                 
                                 textInput(inputId = "plot_title_bottom", 
                                           label = "Bottom Plot Title", 
@@ -93,12 +98,19 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 br(), 
                                 
+                                # Explanatory text
+                                HTML(paste0("The above plot facetted on genre.", br(), br(), 
+                                            "The below plot combines facets and shows by colours.")),
+                                
+                                
                                 plotOutput(outputId = "plot1")
                               )
                             )
                           )
                  ), 
                  
+
+# Tab 2 -------------------------------------------------------------------
                  tabPanel(title = "Plotty Plot",
                           fluidPage(
                             sidebarLayout(
@@ -106,14 +118,37 @@ ui <- navbarPage(title = "Movie Browser",
                               mainPanel()
                             )
                           )
+                 ),
+
+
+# Tab 3 -------------------------------------------------------------------
+                 tabPanel(title = "Movie Table",
+                          fluidPage(
+                            sidebarLayout(
+                              sidebarPanel(
+                                # Numeric input for number of rows to show
+                                numericInput(inputId = "n_rows",
+                                             label = "How many rows do you want to see?",
+                                             value = 10),
+                                
+                                # Action button to show
+                                actionButton(inputId = "button", 
+                                             label = "Show")
+                              ),
+                              mainPanel(
+                                DT::dataTableOutput(outputId = "movietable")
+                              )
+                            )
+                          )
                  )
-                 )
+)
 
 
 
 # Server ------------------------------------------------------------------
 server <- function(input, output) {
-  
+
+# Tab 1 -------------------------------------------------------------------
   output$facetted_plot <- renderPlot({
     test %>% 
       ggplot(aes_string(x = input$x1, y = input$y1)) + 
@@ -135,6 +170,11 @@ server <- function(input, output) {
                  position = "jitter") +
       labs(title = input$plot_title_bottom)
   })
+  
+  
+
+# Tab 3 -------------------------------------------------------------------
+
   
 }
 
