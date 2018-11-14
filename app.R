@@ -114,9 +114,9 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 
                                 plotOutput(outputId = "plot1", 
-                                           brush = "plot1_brush"),
+                                           brush = "plot1_brush_coord"),
                                 
-                                plotOutput(outputId = "plotbrush_temp")
+                                plotOutput(outputId = "plot_brush_temp1")
                               )
                             )
                           )
@@ -225,16 +225,16 @@ ui <- navbarPage(title = "Movie Browser",
                             sidebarLayout(
                               sidebarPanel(
                                 # Numeric input for number of rows to show
-                                numericInput(inputId = "n_rows",
+                                numericInput(inputId = "n_rows3",
                                              label = "How many rows do you want to see?",
                                              value = 10),
                                 
                                 # Action button to show
-                                actionButton(inputId = "button", 
+                                actionButton(inputId = "button3", 
                                              label = "Show")
                               ),
                               mainPanel(
-                                DT::dataTableOutput(outputId = "movietable")
+                                DT::dataTableOutput(outputId = "movietable3")
                               )
                             )
                           )
@@ -270,8 +270,8 @@ server <- function(input, output) {
   })
   
   # Temp Brush Plot
-  output$plotbrush_temp <- renderPlot({
-    brushedPoints(test, input$plot1_brush) %>% 
+  output$plot_brush_temp1 <- renderPlot({
+    brushedPoints(test, input$plot1_brush_coord) %>% 
       ggplot(aes(x = rating, y = release)) + 
       geom_point()
   })
