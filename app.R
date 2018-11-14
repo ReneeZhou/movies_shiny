@@ -9,6 +9,7 @@ library(DT)
 load("objs")
 
 
+# Test set ----------------------------------------------------------------
 # Create a test set
 set.seed(1)
 test <- movies %>% 
@@ -36,6 +37,9 @@ lapply(test, class) %>% unlist()
 continuous_var <- colnames(test)[5:8]
 categorical_var <- colnames(test)[9:12]
 genre_var <- unique(test$genre)
+release_var <- unique(test$releaseBin)
+runtime_var <- unique(test$runtimeBin)
+avgRating_var <- unique(test$avgRatingBin)
 
 
 # UI ----------------------------------------------------------------------
@@ -47,14 +51,15 @@ ui <- navbarPage(title = "Movie Browser",
                             sidebarLayout(
                               sidebarPanel(
                                 
-                                textInput(inputId = "plot_title_top", 
+                                textInput(inputId = "plot_title_top1", 
                                           label = "Top Plot Title", 
                                           placeholder = "Enter text for plot title.",
                                           value = "Facetted on genre"),
                                 
-                                textInput(inputId = "plot_title_bottom", 
+                                textInput(inputId = "plot_title_bottom1", 
                                           label = "Bottom Plot Title", 
-                                          placeholder = "Enter text for plot title."),
+                                          placeholder = "Enter text for plot title.",
+                                          value = "Colored by genre"),
                                 
                                 selectInput(inputId = "x1", 
                                             label = "X axis: ", 
@@ -94,7 +99,7 @@ ui <- navbarPage(title = "Movie Browser",
                               
                               mainPanel(
                                 
-                                plotOutput(outputId = "facetted_plot"),
+                                plotOutput(outputId = "facetted_plot1"),
                                 
                                 br(), 
                                 
@@ -103,7 +108,10 @@ ui <- navbarPage(title = "Movie Browser",
                                             "The below plot combines facets and shows by colours.")),
                                 
                                 
-                                plotOutput(outputId = "plot1")
+                                plotOutput(outputId = "plot1", 
+                                           brush = "plot1_brush"),
+                                
+                                plotOutput(outputId = "plotbrush_temp")
                               )
                             )
                           )
@@ -114,8 +122,93 @@ ui <- navbarPage(title = "Movie Browser",
                  tabPanel(title = "Plotty Plot",
                           fluidPage(
                             sidebarLayout(
-                              sidebarPanel(),
-                              mainPanel()
+                              sidebarPanel(
+                                
+                                textInput(inputId = "plot_title_top2", 
+                                          label = "Top Plot Title", 
+                                          placeholder = "Enter text for plot title.",
+                                          value = "Facetted on genre"),
+                                
+                                textInput(inputId = "plot_title_bottom2", 
+                                          label = "Bottom Plot Title", 
+                                          placeholder = "Enter text for plot title.", 
+                                          value = "Filtered to Drama, 1920s, 90 mins & 6.1-7 scores"),
+                                
+                                selectInput(inputId = "x2", 
+                                            label = "X axis: ", 
+                                            choices = continuous_var,
+                                            selected = "averageRating"),
+                                
+                                selectInput(inputId = "y2", 
+                                            label = "Y axis: ", 
+                                            choices = continuous_var,
+                                            selected = "numVotes"),
+                                
+                                selectInput(inputId = "facet2", 
+                                            label = "Facet: ", 
+                                            choices = categorical_var),
+                                
+                                # Select genre
+                                selectInput(inputId = "genre2",
+                                            label = "Select Genre:",
+                                            choices = genre_var,
+                                            selected = "Drama", 
+                                            selectize = TRUE,
+                                            multiple = TRUE), 
+                                
+                                # Select release bin
+                                selectInput(inputId = "release2",
+                                            label = "Select release interval: ",
+                                            choices = release_var, 
+                                            selected = 1920, 
+                                            selectize = TRUE, 
+                                            multiple = TRUE),
+                                
+                                # Select runtime bin 
+                                selectInput(inputId = "runtime2", 
+                                            label = "Select runtime interval: ",
+                                            choices = runtime_var,
+                                            selected = 90, 
+                                            selectize = TRUE, 
+                                            multiple = TRUE),
+                                
+                                # Select average rating bin
+                                selectInput(inputId = "avgRating2", 
+                                            label = "Select average rating interval: ",
+                                            choices = avgRating_var,
+                                            selectize = TRUE, 
+                                            selected = 7, 
+                                            multiple = TRUE), 
+                                
+                                sliderInput(inputId = "size2",
+                                            label = "Size: ",
+                                            min = 0,
+                                            max = 5, 
+                                            value = 3,
+                                            step = 0.1, 
+                                            animate = TRUE),
+                                
+                                sliderInput(inputId = "alpha2",
+                                            label = "Alpha: ",
+                                            min = 0,
+                                            max = 1, 
+                                            value = 0.3, 
+                                            animate = TRUE)
+                              ),
+                              
+                              mainPanel(
+                                
+                                plotOutput(outputId = "facetted_plot2"),
+                                
+                                br(), 
+                                
+                                # Explanatory text
+                                HTML(paste0("The above plot facetted on genre.", br(), br())),  
+                                            
+                                
+                                plotOutput(outputId = "plot2")
+                                
+                              )
                             )
                           )
                  ),
@@ -149,7 +242,7 @@ ui <- navbarPage(title = "Movie Browser",
 server <- function(input, output) {
 
 # Tab 1 -------------------------------------------------------------------
-  output$facetted_plot <- renderPlot({
+  output$facetted_plot1 <- renderPlot({
     test %>% 
       ggplot(aes_string(x = input$x1, y = input$y1)) + 
       geom_point(size = input$size1, 
@@ -158,7 +251,7 @@ server <- function(input, output) {
       # think about the below - hasn't worked yet 
       # facet_wrap(eval(expr(~ !!ensym(input$facet1)))) 
       # https://stackoverflow.com/questions/21588096/pass-string-to-facet-grid-ggplot2
-      labs(title = input$plot_title_top)
+      labs(title = input$plot_title_top1)
   })
   
   
@@ -168,14 +261,39 @@ server <- function(input, output) {
       geom_point(size = input$size1, 
                  alpha = input$alpha1, 
                  position = "jitter") +
-      labs(title = input$plot_title_bottom)
+      labs(title = input$plot_title_bottom1)
+  })
+  
+  # Temp Brush Plot
+  output$plotbrush_temp <- renderPlot({
+    brushedPoints(test, input$plot1_brush) %>% 
+      ggplot(aes(x = averageRating, y = release)) + 
+      geom_point()
+  })
+
+# Tab 2 -------------------------------------------------------------------
+  output$facetted_plot2 <- renderPlot({
+    test %>% 
+      ggplot(aes_string(x = input$x2, y = input$y2)) + 
+      geom_point(size = input$size2, 
+                 alpha = input$alpha2) +
+      facet_wrap(reformulate(input$facet2)) +
+      labs(title = input$plot_title_top2)
   })
   
   
-
-# Tab 3 -------------------------------------------------------------------
-
-  
+  output$plot2 <- renderPlot({
+    # Make sure values are valuable otherwise raise a silence
+    req(input$genre2, input$release2, input$avgRating2, input$size2)
+    
+    test %>% 
+      filter(genre %in% input$genre2,
+             releaseBin %in% input$release2) %>% 
+      ggplot(aes_string(x = input$x2, y = input$y2)) +
+      geom_point(size = input$size2, 
+                 alpha = input$alpha2) +
+      labs(title = input$plot_title_bottom2)
+  })
 }
 
 
