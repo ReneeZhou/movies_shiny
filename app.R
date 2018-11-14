@@ -271,6 +271,7 @@ server <- function(input, output) {
       geom_point()
   })
 
+  
 # Tab 2 -------------------------------------------------------------------
   output$facetted_plot2 <- renderPlot({
     test %>% 
@@ -288,7 +289,9 @@ server <- function(input, output) {
     
     test %>% 
       filter(genre %in% input$genre2,
-             releaseBin %in% input$release2) %>% 
+             releaseBin %in% input$release2,
+             runtimeBin %in% input$runtime2,
+             avgRatingBin %in% input$avgRating2) %>% 
       ggplot(aes_string(x = input$x2, y = input$y2)) +
       geom_point(size = input$size2, 
                  alpha = input$alpha2) +
