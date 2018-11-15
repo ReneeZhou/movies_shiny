@@ -307,6 +307,9 @@ server <- function(input, output) {
 
   
 # Tab 3 -------------------------------------------------------------------
+  output$movietable3 <- DT::renderDataTable({
+    test
+  })
   
 }
 
