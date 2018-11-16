@@ -89,7 +89,7 @@ ui <- navbarPage(title = "Movie Browser",
                                             label = "Size: ",
                                             min = 0,
                                             max = 5, 
-                                            value = 3,
+                                            value = 3.5,
                                             step = 0.1, 
                                             animate = TRUE),
                                 
@@ -97,7 +97,7 @@ ui <- navbarPage(title = "Movie Browser",
                                             label = "Alpha: ",
                                             min = 0,
                                             max = 1, 
-                                            value = 0.3, 
+                                            value = 1, 
                                             animate = TRUE)
                                 
                               ),
@@ -106,15 +106,33 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 plotOutput(outputId = "facetted_plot1"),
                                 
-                                br(), 
+                                br(),  
                                 
                                 # Explanatory text
-                                HTML(paste0("The above plot facetted on genre.", br(), br(), 
-                                            "The below plot combines facets and shows by colours.")),
+                                HTML(paste0("The plot above is facetted on ", 
+                                            "input$___ ", 
+                                            "whereas the plot below combines facets and shows ",  
+                                            "input$___ ", 
+                                            "by colors.")),
                                 
+                                br(), br(), 
                                 
                                 plotOutput(outputId = "plot1", 
                                            brush = "plot1_brush_coord"),
+                                
+                                # Add a visual separation
+                                hr(), 
+                                
+                                # Explanatory text
+                                HTML(paste0("The plot below shows the brushed area in the plot above.", 
+                                            br(),  
+                                            "It's possible to see fewer points in the plot below
+                                            since we have added some random noises to the plot above
+                                            for visual clarity - to avoid the same movie labelled with
+                                            different genres overlappong. 
+                                            (Each movie can be labelled from zero to three genres.)")),
+                                
+                                br(), 
                                 
                                 plotOutput(outputId = "plot_brush_temp1")
                               )
@@ -307,8 +325,11 @@ server <- function(input, output) {
 
   
 # Tab 3 -------------------------------------------------------------------
-  output$movietable3 <- DT::renderDataTable({
-    test
+  # For more DT info - https://rstudio.github.io/DT/shiny.html
+  output$movietable3 <- DT::renderDataTable({ 
+    datatable(data = test, 
+              options = list(pageLength = 20),
+              rownames = FALSE)
   })
   
 }
