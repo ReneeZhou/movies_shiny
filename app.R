@@ -248,7 +248,7 @@ ui <- navbarPage(title = "Movie Browser",
                                              value = 10),
                                 
                                 # Action button to show
-                                actionButton(inputId = "button3", 
+                                actionButton(inputId = "show_button3", 
                                              label = "Show")
                               ),
                               mainPanel(
@@ -326,12 +326,41 @@ server <- function(input, output) {
   
 # Tab 3 -------------------------------------------------------------------
   # For more DT info - https://rstudio.github.io/DT/shiny.html
-  output$movietable3 <- DT::renderDataTable({ 
-    datatable(data = test, 
-              options = list(pageLength = 20),
-              rownames = FALSE)
-  })
+  # output$movietable3 <- DT::renderDataTable({
+  #   datatable(data = test,
+  #             options = list(pageLength = isolate({input$n_rows3})),
+  #             rownames = FALSE)
+  # })
+  # 
+  # test_sliced <- reactive({
+  #   req(input$n_rows)
+  #   test %>%
+  #     slice(1:input$n_rows3)
+  # })
+
+  # Not quite - currently controls rows available, not pageLength
+  # Currently slice the data set directly but 
+  # Goal - user control pageLength parameter
   
+  # Cannot use observeEvent() here
+  # test_sliced <- eventReactive(input$show_button3, {
+  #   req(input$n_rows3)
+  #   test %>%
+  #     slice(1:input$n_rows3)
+  #   }
+  # )
+  #  
+  # output$movietable3 <- DT::renderDataTable(
+  #   DT::datatable(data = test_sliced())
+  # )
+  
+  output$movietable3 <- DT::renderDataTable(
+    DT::datatable(
+      data = test,
+      options = list(bLengthChange = FALSE, # Removes the pageLength drop down
+                     pageLength = input$n_rows3)
+    )
+  )
 }
 
 
