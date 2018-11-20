@@ -132,7 +132,7 @@ ui <- navbarPage(title = "Movie Browser",
                                             different genres overlappong. 
                                             (Each movie can be labelled from zero to three genres.)")),
                                 
-                                br(), 
+                                br(), br(), 
                                 
                                 plotOutput(outputId = "plot_brush_temp1")
                               )
@@ -257,7 +257,21 @@ ui <- navbarPage(title = "Movie Browser",
                               )
                             )
                           )
-                 )
+                 ),
+
+
+# Tab 4 -------------------------------------------------------------------
+                 tabPanel(title = "Table Info to Plot",
+                          fluidPage(
+                            splitLayout(
+                              DT::dataTableOutput(outputId = "movietable4"),
+                              plotOutput(outputId = "plot4")
+                            )
+                          )
+                  )
+
+                 
+
 )
 
 
@@ -362,6 +376,28 @@ server <- function(input, output, session) {
                      pageLength = input$n_rows3)
     )
   )
+  
+
+# Tab 4 -------------------------------------------------------------------
+  output$movietable4 <- DT::renderDataTable(
+    DT::datatable(
+      data = test,
+      options = list(
+        pageLength = 20
+      )
+    )
+  )
+  
+  output$plot4 <- renderPlot({
+    indicies <- input$movietable4_rows_selected
+    req(indicies)
+    test %>% 
+      slice(indicies) %>% 
+      ggplot(aes(x = rating, y = numVotes, 
+                 color = ratingBin, shape = runtimeBin)) +
+      geom_point(size = 4)
+  })
+  
 }
 
 
