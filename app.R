@@ -245,7 +245,8 @@ ui <- navbarPage(title = "Movie Browser",
                                 # Numeric input for number of rows to show
                                 numericInput(inputId = "n_rows3",
                                              label = "How many rows do you want to see?",
-                                             value = 10),
+                                             value = 10, 
+                                             min = 1),
                                 
                                 # Action button to show
                                 actionButton(inputId = "show_button3", 
@@ -262,7 +263,7 @@ ui <- navbarPage(title = "Movie Browser",
 
 
 # Server ------------------------------------------------------------------
-server <- function(input, output) {
+server <- function(input, output, session) {
 
 # Tab 1 -------------------------------------------------------------------
   output$facetted_plot1 <- renderPlot({
