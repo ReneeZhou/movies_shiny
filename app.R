@@ -17,7 +17,7 @@ test <- movies %>%
   gather(key = "genre", value = "bool", -c(1:8)) %>% 
   filter(bool == 1) %>% 
   arrange(tconst) %>% 
-  select(-bool) %>% 
+  select(-bool, -originalTitle) %>% 
   mutate(genre = as.factor(genre),
          isAdult = as.logical(isAdult), 
          releaseBin = cut(release, 
