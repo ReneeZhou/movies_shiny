@@ -36,11 +36,11 @@ lapply(test, class) %>% unlist()
 
 
 # Change averageRating column name for future convenience
-colnames(test)[7] <- "rating"
+colnames(test)[6] <- "rating"
 
 
-continuous_var <- colnames(test)[5:8]
-categorical_var <- colnames(test)[9:12]
+continuous_var <- colnames(test)[4:7]
+categorical_var <- colnames(test)[8:11]
 genre_var <- unique(test$genre)
 release_var <- unique(test$releaseBin)
 runtime_var <- unique(test$runtimeBin)
@@ -65,6 +65,10 @@ ui <- navbarPage(title = "Movie Browser",
                                           label = "Bottom Plot Title", 
                                           placeholder = "Enter text for plot title.",
                                           value = "Colored by genre"),
+                                
+                                actionButton(inputId = "show_title1",
+                                             label = "Show"),
+                                br(), br(), 
                                 
                                 selectInput(inputId = "x1", 
                                             label = "X axis: ", 
@@ -156,6 +160,10 @@ ui <- navbarPage(title = "Movie Browser",
                                           label = "Bottom Plot Title", 
                                           placeholder = "Enter text for plot title.", 
                                           value = "Filtered to Drama, 1920s, 90 mins & 6.1-7 scores"),
+                                
+                                actionButton(inputId = "show_title1",
+                                             label = "Show"),
+                                br(), br(), 
                                 
                                 selectInput(inputId = "x2", 
                                             label = "X axis: ", 
