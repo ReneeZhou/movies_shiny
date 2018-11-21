@@ -3,6 +3,8 @@ library(shiny)
 library(tidyverse)
 library(rlang)
 library(DT)
+library(plotly)
+library(htmlwidgets)
 
 
 # Objects -----------------------------------------------------------------
@@ -121,8 +123,9 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 br(), br(), 
                                 
-                                plotOutput(outputId = "plot1", 
-                                           brush = "plot1_brush_coord"),
+                                plotlyOutput(outputId = "plot1"), 
+                                           # brush = "plot1_brush_coord"), 
+                                           # temporarily disabled the brush feature in the second plot
                                 
                                 # Add a visual separation
                                 hr(), 
@@ -318,13 +321,14 @@ server <- function(input, output, session) {
   })
   
   
-  output$plot1 <- renderPlot({
-    test %>% 
+  output$plot1 <- renderPlotly({
+    p <- test %>% 
       ggplot(aes_string(x = input$x1, y = input$y1, color = input$color1)) + 
       geom_point(size = input$size1, 
                  alpha = input$alpha1, 
                  position = "jitter") +
-      labs(title = update_bottom_plot_title1())
+      labs(title = update_bottom_plot_title1()) 
+      ggplotly(p)
   })
   
   # Temp Brush Plot
