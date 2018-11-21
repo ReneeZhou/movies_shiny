@@ -161,7 +161,7 @@ ui <- navbarPage(title = "Movie Browser",
                                           placeholder = "Enter text for plot title.", 
                                           value = "Filtered to Drama, 1920s, 90 mins & 6.1-7 scores"),
                                 
-                                actionButton(inputId = "show_title1",
+                                actionButton(inputId = "show_title2",
                                              label = "Show"),
                                 br(), br(), 
                                 
@@ -288,6 +288,23 @@ ui <- navbarPage(title = "Movie Browser",
 server <- function(input, output, session) {
 
 # Tab 1 -------------------------------------------------------------------
+    # Two different values to be updated via the same button
+    # by referring to the same action button Id in reactive values
+    update_top_plot_title1 <- eventReactive(
+    input$show_title1, {
+      toTitleCase(input$plot_title_top1)
+    },
+    ignoreNULL = FALSE
+  )
+  
+  update_bottom_plot_title1 <- eventReactive(
+    input$show_title1, {
+      toTitleCase(input$plot_title_bottom1)
+    },
+    ignoreNULL = FALSE
+  )
+  
+  
   output$facetted_plot1 <- renderPlot({
     test %>% 
       ggplot(aes_string(x = input$x1, y = input$y1)) + 
@@ -297,7 +314,7 @@ server <- function(input, output, session) {
       # think about the below - hasn't worked yet 
       # facet_wrap(eval(expr(~ !!ensym(input$facet1)))) 
       # https://stackoverflow.com/questions/21588096/pass-string-to-facet-grid-ggplot2
-      labs(title = input$plot_title_top1)
+      labs(title = update_top_plot_title1())
   })
   
   
@@ -307,7 +324,7 @@ server <- function(input, output, session) {
       geom_point(size = input$size1, 
                  alpha = input$alpha1, 
                  position = "jitter") +
-      labs(title = input$plot_title_bottom1)
+      labs(title = update_bottom_plot_title1())
   })
   
   # Temp Brush Plot
@@ -319,13 +336,29 @@ server <- function(input, output, session) {
 
   
 # Tab 2 -------------------------------------------------------------------
+  # Update plot title when action button is clicked
+  update_top_plot_title2 <- eventReactive(
+    input$show_title2, {
+      toTitleCase(input$plot_title_top2)
+    },
+    ignoreNULL = FALSE
+  )
+  
+  update_bottom_plot_title2 <- eventReactive(
+    input$show_title2, {
+      toTitleCase(input$plot_title_bottom2)
+    },
+    ignoreNULL = FALSE
+  )
+  
+  
   output$facetted_plot2 <- renderPlot({
     test %>% 
       ggplot(aes_string(x = input$x2, y = input$y2)) + 
       geom_point(size = input$size2, 
                  alpha = input$alpha2) +
       facet_wrap(reformulate(input$facet2)) +
-      labs(title = input$plot_title_top2)
+      labs(title = update_top_plot_title2())
   })
   
   
@@ -343,7 +376,7 @@ server <- function(input, output, session) {
       ggplot(aes_string(x = input$x2, y = input$y2)) +
       geom_point(size = input$size2, 
                  alpha = input$alpha2) +
-      labs(title = input$plot_title_bottom2)
+      labs(title = update_bottom_plot_title2())
   })
 
   
