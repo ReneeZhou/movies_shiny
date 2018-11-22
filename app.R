@@ -30,8 +30,8 @@ test <- movies %>%
                           breaks = seq(30, 210, 10),
                           labels = seq(40, 210, 10)),
          ratingBin = cut(averageRating,
-                            breaks = seq(1, 10, 1),
-                            labels = seq(2, 10, 1)))
+                         breaks = seq(1, 10, 1),
+                         labels = seq(2, 10, 1)))
 
 
 # Check test column types
@@ -50,9 +50,13 @@ runtime_var <- unique(test$runtimeBin)
 rating_var <- unique(test$ratingBin)
 
 
+# Further adjustment on the data set 
+test <- test %>% select(-isAdult) # Remove isAdult column
+
+
 # UI ----------------------------------------------------------------------
 ui <- navbarPage(title = "Movie Browser", 
-
+                 
 # Tab 1 -------------------------------------------------------------------
                  tabPanel(title = "Plots",
                           fluidPage(
@@ -121,8 +125,8 @@ ui <- navbarPage(title = "Movie Browser",
                                 br(), br(), 
                                 
                                 plotlyOutput(outputId = "plot1"), 
-                                           # brush = "plot1_brush_coord"), 
-                                           # temporarily disabled the brush feature in the second plot
+                                              # brush = "plot1_brush_coord"), 
+                                              # temporarily disabled the brush feature in the second plot
                                 
                                 # Add a visual separation
                                 hr(), 
@@ -142,9 +146,9 @@ ui <- navbarPage(title = "Movie Browser",
                               )
                             )
                           )
-                 ), 
+                   ), 
                  
-
+                 
 # Tab 2 -------------------------------------------------------------------
                  tabPanel(title = "Plotty Plot",
                           fluidPage(
@@ -231,7 +235,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 # Explanatory text
                                 HTML(paste0("The above plot facetted on genre.", br(), br())),  
-                                            
+                                
                                 
                                 plotOutput(outputId = "plot2")
                                 
@@ -239,8 +243,8 @@ ui <- navbarPage(title = "Movie Browser",
                             )
                           )
                  ),
-
-
+                 
+                 
 # Tab 3 -------------------------------------------------------------------
                  tabPanel(title = "Movie Table",
                           fluidPage(
@@ -262,8 +266,8 @@ ui <- navbarPage(title = "Movie Browser",
                             )
                           )
                  ),
-
-
+                 
+                 
 # Tab 4 -------------------------------------------------------------------
                  tabPanel(title = "Table Info to Plot",
                           fluidPage(
@@ -273,20 +277,20 @@ ui <- navbarPage(title = "Movie Browser",
                             )
                           )
                   )
-
                  
-
+                 
+                 
 )
 
 
 
 # Server ------------------------------------------------------------------
 server <- function(input, output, session) {
-
+  
 # Tab 1 -------------------------------------------------------------------
-    # Two different values to be updated via the same button
-    # by referring to the same action button Id in reactive values
-    update_top_plot_title1 <- eventReactive(
+  # Two different values to be updated via the same button
+  # by referring to the same action button Id in reactive values
+  update_top_plot_title1 <- eventReactive(
     input$show_title1, {
       toTitleCase(input$plot_title_top1)
     },
@@ -321,7 +325,7 @@ server <- function(input, output, session) {
                  alpha = input$alpha1, 
                  position = "jitter") +
       labs(title = update_bottom_plot_title1()) 
-      ggplotly(p)
+    ggplotly(p)
   })
   
   # Temp Brush Plot
@@ -330,7 +334,7 @@ server <- function(input, output, session) {
       ggplot(aes(x = rating, y = release)) + 
       geom_point()
   })
-
+  
   
 # Tab 2 -------------------------------------------------------------------
   # Update plot title when action button is clicked
@@ -375,7 +379,7 @@ server <- function(input, output, session) {
                  alpha = input$alpha2) +
       labs(title = update_bottom_plot_title2())
   })
-
+  
   
 # Tab 3 -------------------------------------------------------------------
   # For more DT info - https://rstudio.github.io/DT/shiny.html
@@ -384,7 +388,7 @@ server <- function(input, output, session) {
   #             options = list(pageLength = isolate({input$n_rows3})),
   #             rownames = FALSE)
   # })
-
+  
   
   # Check whether the input row number is truthy and cached for later use (render) 
   n_rows_to_show <- eventReactive(input$show_button3, {
@@ -392,7 +396,7 @@ server <- function(input, output, session) {
     }, 
     ignoreNULL = FALSE
   )
-
+  
   output$movietable3 <- DT::renderDataTable(
     DT::datatable(
       data = test,
@@ -401,7 +405,7 @@ server <- function(input, output, session) {
     )
   )
   
-
+  
 # Tab 4 -------------------------------------------------------------------
   output$movietable4 <- DT::renderDataTable(
     DT::datatable(
