@@ -61,13 +61,11 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 textInput(inputId = "plot_title_top1", 
                                           label = "Top Plot Title", 
-                                          placeholder = "Enter text for plot title.",
-                                          value = "Facetted on genre"),
+                                          placeholder = "Enter text for plot title."),
                                 
                                 textInput(inputId = "plot_title_bottom1", 
                                           label = "Bottom Plot Title", 
-                                          placeholder = "Enter text for plot title.",
-                                          value = "Colored by genre"),
+                                          placeholder = "Enter text for plot title."),
                                 
                                 actionButton(inputId = "show_title1",
                                              label = "Show"),
@@ -157,13 +155,11 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 textInput(inputId = "plot_title_top2", 
                                           label = "Top Plot Title", 
-                                          placeholder = "Enter text for plot title.",
-                                          value = "Facetted on genre"),
+                                          placeholder = "Enter text for plot title."),
                                 
                                 textInput(inputId = "plot_title_bottom2", 
                                           label = "Bottom Plot Title", 
-                                          placeholder = "Enter text for plot title.", 
-                                          value = "Filtered to Drama, 1920s, 90 mins & 6.1-7 scores"),
+                                          placeholder = "Enter text for plot title."),
                                 
                                 actionButton(inputId = "show_title2",
                                              label = "Show"),
@@ -257,7 +253,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 # Numeric input for number of rows to show
                                 numericInput(inputId = "n_rows3",
                                              label = "How many rows do you want to see?",
-                                             value = 10, 
+                                             value = 15, 
                                              min = 1),
                                 
                                 # Action button to show
@@ -392,34 +388,20 @@ server <- function(input, output, session) {
   #             options = list(pageLength = isolate({input$n_rows3})),
   #             rownames = FALSE)
   # })
-  # 
-  # test_sliced <- reactive({
-  #   req(input$n_rows)
-  #   test %>%
-  #     slice(1:input$n_rows3)
-  # })
 
-  # Not quite - currently controls rows available, not pageLength
-  # Currently slice the data set directly but 
-  # Goal - user control pageLength parameter
   
-  # Cannot use observeEvent() here
-  # test_sliced <- eventReactive(input$show_button3, {
-  #   req(input$n_rows3)
-  #   test %>%
-  #     slice(1:input$n_rows3)
-  #   }
-  # )
-  #  
-  # output$movietable3 <- DT::renderDataTable(
-  #   DT::datatable(data = test_sliced())
-  # )
-  
+  # Check whether the input row number is truthy and cached for later use (render) 
+  n_rows_to_show <- eventReactive(input$show_button3, {
+    req(input$n_rows3)
+    }, 
+    ignoreNULL = FALSE
+  )
+
   output$movietable3 <- DT::renderDataTable(
     DT::datatable(
       data = test,
       options = list(bLengthChange = FALSE, # Removes the pageLength drop down
-                     pageLength = input$n_rows3)
+                     pageLength = n_rows_to_show())
     )
   )
   
