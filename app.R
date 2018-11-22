@@ -95,15 +95,13 @@ ui <- navbarPage(title = "Movie Browser",
                                             min = 0,
                                             max = 5, 
                                             value = 3.5,
-                                            step = 0.1, 
-                                            animate = TRUE),
+                                            step = 0.1),
                                 
                                 sliderInput(inputId = "alpha1",
                                             label = "Alpha: ",
                                             min = 0,
                                             max = 1, 
-                                            value = 1, 
-                                            animate = TRUE)
+                                            value = 1)
                                 
                               ),
                               
@@ -216,15 +214,13 @@ ui <- navbarPage(title = "Movie Browser",
                                             min = 0,
                                             max = 5, 
                                             value = 3,
-                                            step = 0.1, 
-                                            animate = TRUE),
+                                            step = 0.1),
                                 
                                 sliderInput(inputId = "alpha2",
                                             label = "Alpha: ",
                                             min = 0,
                                             max = 1, 
-                                            value = 0.3, 
-                                            animate = TRUE)
+                                            value = 0.3)
                               ),
                               
                               mainPanel(
