@@ -5,6 +5,7 @@ library(rlang)
 library(DT)
 library(plotly)
 library(htmlwidgets)
+library(tools)
 
 
 # Objects -----------------------------------------------------------------
