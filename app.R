@@ -53,7 +53,6 @@ rating_var <- unique(test$ratingBin)
 
 
 
-
 # UI ----------------------------------------------------------------------
 ui <- navbarPage(title = "Movie Browser", 
                  
@@ -77,21 +76,34 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 selectInput(inputId = "x1", 
                                             label = "X axis: ", 
-                                            choices = continuous_var,
+                                            choices = c("Release" = "release",
+                                                        "Runtime" = "runtimeMinutes",
+                                                        "Rating" = "rating", 
+                                                        "Number of Votes" = "numVotes"),
                                             selected = "rating"),
                                 
                                 selectInput(inputId = "y1", 
                                             label = "Y axis: ", 
-                                            choices = continuous_var,
+                                            choices = c("Release" = "release",
+                                                        "Runtime" = "runtimeMinutes",
+                                                        "Rating" = "rating", 
+                                                        "Number of Votes" = "numVotes"),
                                             selected = "numVotes"),
                                 
                                 selectInput(inputId = "facet1", 
                                             label = "Facet: ", 
-                                            choices = categorical_var),
+                                            choices = c("Genre" = "genre",
+                                                        "Release Bin" = "releaseBin",
+                                                        "Runtime Bin" = "runtimeBin",
+                                                        "Rating Bin" = "ratingBin"),
+                                            selected = "runtime"),
                                 
                                 selectInput(inputId = "color1", 
                                             label = "Color: ", 
-                                            choices = categorical_var,
+                                            choices = c("Genre" = "genre",
+                                                        "Release Bin" = "releaseBin",
+                                                        "Runtime Bin" = "runtimeBin",
+                                                        "Rating Bin" = "ratingBin"),
                                             selected = "genre"), 
                                 
                                 sliderInput(inputId = "size1",
@@ -169,17 +181,26 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 selectInput(inputId = "x2", 
                                             label = "X axis: ", 
-                                            choices = continuous_var,
+                                            choices = c("Release" = "release",
+                                                        "Runtime" = "runtimeMinutes",
+                                                        "Rating" = "rating", 
+                                                        "Number of Votes" = "numVotes"),
                                             selected = "rating"),
                                 
                                 selectInput(inputId = "y2", 
                                             label = "Y axis: ", 
-                                            choices = continuous_var,
+                                            choices = c("Release" = "release",
+                                                        "Runtime" = "runtimeMinutes",
+                                                        "Rating" = "rating", 
+                                                        "Number of Votes" = "numVotes"),
                                             selected = "numVotes"),
                                 
                                 selectInput(inputId = "facet2", 
                                             label = "Facet: ", 
-                                            choices = categorical_var),
+                                            choices = c("Genre" = "genre",
+                                                        "Release Bin" = "releaseBin",
+                                                        "Runtime Bin" = "runtimeBin",
+                                                        "Rating Bin" = "ratingBin")),
                                 
                                 # Select genre
                                 selectInput(inputId = "genre2",
