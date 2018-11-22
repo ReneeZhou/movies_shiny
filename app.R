@@ -42,16 +42,16 @@ lapply(test, class) %>% unlist()
 colnames(test)[6] <- "rating"
 
 
-continuous_var <- colnames(test)[4:7]
-categorical_var <- colnames(test)[8:11]
+# Further adjustment on the data set 
+test <- test %>% select(-isAdult) # Remove isAdult column
+
 genre_var <- unique(test$genre)
 release_var <- unique(test$releaseBin)
 runtime_var <- unique(test$runtimeBin)
 rating_var <- unique(test$ratingBin)
 
 
-# Further adjustment on the data set 
-test <- test %>% select(-isAdult) # Remove isAdult column
+
 
 
 # UI ----------------------------------------------------------------------
