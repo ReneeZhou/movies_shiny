@@ -51,7 +51,8 @@ runtime_var <- unique(test$runtimeBin)
 rating_var <- unique(test$ratingBin)
 
 
-
+# Change the levels of genre
+levels(test$genre) <- c(levels(test$genre)[-17], "No Genre")
 
 # UI ----------------------------------------------------------------------
 ui <- navbarPage(title = "Movie Browser", 
@@ -136,7 +137,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 br(), br(), 
                                 
-                                plotlyOutput(outputId = "plot1"), 
+                                plotOutput(outputId = "plot1"), 
                                               # brush = "plot1_brush_coord"), 
                                               # temporarily disabled the brush feature in the second plot
                                 
@@ -294,7 +295,7 @@ ui <- navbarPage(title = "Movie Browser",
                           fluidPage(
                             splitLayout(
                               DT::dataTableOutput(outputId = "movietable4"),
-                              plotOutput(outputId = "plot4")
+                              plotlyOutput(outputId = "plot4")
                             )
                           )
                   )
@@ -335,18 +336,19 @@ server <- function(input, output, session) {
       # think about the below - hasn't worked yet 
       # facet_wrap(eval(expr(~ !!ensym(input$facet1)))) 
       # https://stackoverflow.com/questions/21588096/pass-string-to-facet-grid-ggplot2
-      labs(title = update_top_plot_title1())
+      labs(title = update_top_plot_title1(),
+           x = toTitleCase(input$x1),
+           y = to) 
   })
   
   
-  output$plot1 <- renderPlotly({
-    p <- test %>% 
+  output$plot1 <- renderPlot({
+    test %>% 
       ggplot(aes_string(x = input$x1, y = input$y1, color = input$color1)) + 
       geom_point(size = input$size1, 
                  alpha = input$alpha1, 
                  position = "jitter") +
       labs(title = update_bottom_plot_title1()) 
-    ggplotly(p)
   })
   
   # Temp Brush Plot
@@ -437,14 +439,15 @@ server <- function(input, output, session) {
     )
   )
   
-  output$plot4 <- renderPlot({
+  output$plot4 <- renderPlotly({
     indicies <- input$movietable4_rows_selected
     req(indicies)
-    test %>% 
+    p <- test %>% 
       slice(indicies) %>% 
       ggplot(aes(x = rating, y = numVotes, 
                  color = ratingBin, shape = runtimeBin)) +
       geom_point(size = 4)
+    ggplotly(p)
   })
   
 }
