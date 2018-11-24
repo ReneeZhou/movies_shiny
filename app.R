@@ -132,12 +132,10 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 br(),  
                                 
+                               
                                 # Explanatory text
-                                HTML(paste0("The plot above is facetted on ", 
-                                            "input$___ ", 
-                                            "whereas the plot below combines facets and shows ",  
-                                            "input$___ ", 
-                                            "by colors.")),
+                                uiOutput(outputId = "text1"),
+                                
                                 
                                 br(), br(), 
                                 
@@ -156,6 +154,8 @@ ui <- navbarPage(title = "Movie Browser",
                                             for visual clarity - to avoid the same movie labelled with
                                             different genres overlappong. 
                                             (Each movie can be labelled from zero to three genres.)")),
+                                
+                               
                                 
                                 br(), br(), 
                                 
@@ -343,6 +343,12 @@ server <- function(input, output, session) {
       labs(title = update_top_plot_title1()) 
   })
   
+  # Explanatory test
+  output$text1 <- renderUI({paste0("The plot above is facetted on ", 
+                                     input$facet1, 
+                                     " whereas the plot below combines facets and shows ",  
+                                     input$color1, 
+                                     " by colors.")})
   
   output$plot1 <- renderPlot({
     test %>% 
@@ -446,7 +452,7 @@ server <- function(input, output, session) {
     req(indicies)
     p <- test %>% 
       slice(indicies) %>% 
-      ggplot(aes(x = rating, y = numVotes, 
+      ggplot(aes(x = rating, y = numberOfVotes, 
                  color = ratingBin, shape = runtimeBin)) +
       geom_point(size = 4)
     ggplotly(p)
