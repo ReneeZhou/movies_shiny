@@ -50,11 +50,11 @@ test <- test %>%
 lapply(test, class) %>% unlist()
 
 
-# For labels in ui
-genre_var <- unique(test$genre)
-release_var <- unique(test$releaseBin)
-runtime_var <- unique(test$runtimeBin)
-rating_var <- unique(test$ratingBin)
+# Ui labels
+genre_var <- levels(droplevels(unique(test$genre)))
+release_var <- levels(droplevels(unique(test$releaseBin)))
+runtime_var <- levels(droplevels(unique(test$runtimeBin)))
+rating_var <- levels(droplevels(unique(test$ratingBin)))
 
 
 
