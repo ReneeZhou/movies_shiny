@@ -31,28 +31,32 @@ test <- movies %>%
                           labels = seq(40, 210, 10)),
          ratingBin = cut(averageRating,
                          breaks = seq(1, 10, 1),
-                         labels = seq(2, 10, 1)))
+                         labels = seq(2, 10, 1)),
+         genre = recode(genre, noGenre = "No Genre")) %>% 
+  select(-isAdult) %>% # Discard isAdult column
+  # Rename cols to allow plot label automation
+  rename(id = tconst, title = primaryTitle, runtime = runtimeMinutes,
+         rating = averageRating, numberOfVotes = numVotes) 
+
+  # Change genre levels - move "No Genre" to the last
+test <- test %>%
+  mutate(genre = factor(test$genre, 
+                        levels = c(levels(test$genre)[-17], levels(test$genre)[17]), 
+                        labels = c(levels(test$genre)[-17], levels(test$genre)[17])))
+
 
 
 # Check test column types
 lapply(test, class) %>% unlist()
 
 
-# Change averageRating column name for future convenience
-colnames(test)[6] <- "rating"
-
-
-# Further adjustment on the data set 
-test <- test %>% select(-isAdult) # Remove isAdult column
-
+# For labels in ui
 genre_var <- unique(test$genre)
 release_var <- unique(test$releaseBin)
 runtime_var <- unique(test$runtimeBin)
 rating_var <- unique(test$ratingBin)
 
 
-# Change the levels of genre
-levels(test$genre) <- c(levels(test$genre)[-17], "No Genre")
 
 # UI ----------------------------------------------------------------------
 ui <- navbarPage(title = "Movie Browser", 
@@ -78,18 +82,18 @@ ui <- navbarPage(title = "Movie Browser",
                                 selectInput(inputId = "x1", 
                                             label = "X axis: ", 
                                             choices = c("Release" = "release",
-                                                        "Runtime" = "runtimeMinutes",
+                                                        "Runtime" = "runtime",
                                                         "Rating" = "rating", 
-                                                        "Number of Votes" = "numVotes"),
+                                                        "Number of Votes" = "numberOfVotes"),
                                             selected = "rating"),
                                 
                                 selectInput(inputId = "y1", 
                                             label = "Y axis: ", 
                                             choices = c("Release" = "release",
-                                                        "Runtime" = "runtimeMinutes",
+                                                        "Runtime" = "runtime",
                                                         "Rating" = "rating", 
-                                                        "Number of Votes" = "numVotes"),
-                                            selected = "numVotes"),
+                                                        "Number of Votes" = "numberOfVotes"),
+                                            selected = "numberOfVotes"),
                                 
                                 selectInput(inputId = "facet1", 
                                             label = "Facet: ", 
@@ -183,18 +187,18 @@ ui <- navbarPage(title = "Movie Browser",
                                 selectInput(inputId = "x2", 
                                             label = "X axis: ", 
                                             choices = c("Release" = "release",
-                                                        "Runtime" = "runtimeMinutes",
+                                                        "Runtime" = "runtime",
                                                         "Rating" = "rating", 
-                                                        "Number of Votes" = "numVotes"),
+                                                        "Number of Votes" = "numberOfVotes"),
                                             selected = "rating"),
                                 
                                 selectInput(inputId = "y2", 
                                             label = "Y axis: ", 
                                             choices = c("Release" = "release",
-                                                        "Runtime" = "runtimeMinutes",
+                                                        "Runtime" = "runtime",
                                                         "Rating" = "rating", 
-                                                        "Number of Votes" = "numVotes"),
-                                            selected = "numVotes"),
+                                                        "Number of Votes" = "numberOfVotes"),
+                                            selected = "numberOfVotes"),
                                 
                                 selectInput(inputId = "facet2", 
                                             label = "Facet: ", 
@@ -336,9 +340,7 @@ server <- function(input, output, session) {
       # think about the below - hasn't worked yet 
       # facet_wrap(eval(expr(~ !!ensym(input$facet1)))) 
       # https://stackoverflow.com/questions/21588096/pass-string-to-facet-grid-ggplot2
-      labs(title = update_top_plot_title1(),
-           x = toTitleCase(input$x1),
-           y = to) 
+      labs(title = update_top_plot_title1()) 
   })
   
   
