@@ -101,7 +101,7 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Release Bin" = "releaseBin",
                                                         "Runtime Bin" = "runtimeBin",
                                                         "Rating Bin" = "ratingBin"),
-                                            selected = "runtime"),
+                                            selected = "runtimeBin"),
                                 
                                 selectInput(inputId = "color1", 
                                             label = "Color: ", 
@@ -260,8 +260,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 br(), 
                                 
                                 # Explanatory text
-                                HTML(paste0("The above plot facetted on genre.", br(), br())),  
-                                
+                                uiOutput(outputId = "text2"),
                                 
                                 plotOutput(outputId = "plot2")
                                 
@@ -345,10 +344,10 @@ server <- function(input, output, session) {
   
   # Explanatory test
   output$text1 <- renderUI({paste0("The plot above is facetted on ", 
-                                     input$facet1, 
-                                     " whereas the plot below combines facets and shows ",  
-                                     input$color1, 
-                                     " by colors.")})
+                                   '"', input$facet1, '"',
+                                   " whereas the plot below combines facets and shows ",  
+                                   '"', input$color1, '"', 
+                                   " by colors.")})
   
   output$plot1 <- renderPlot({
     test %>% 
@@ -391,6 +390,12 @@ server <- function(input, output, session) {
                  alpha = input$alpha2) +
       facet_wrap(reformulate(input$facet2)) +
       labs(title = update_top_plot_title2())
+  })
+  
+  # Explanatory text
+  output$text2 <- renderUI({
+    paste0("The above plot is faceted on ",
+           '"', input$facet2, '".')
   })
   
   
