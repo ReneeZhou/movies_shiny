@@ -77,7 +77,9 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 actionButton(inputId = "show_title1",
                                              label = "Show"),
-                                br(), br(), 
+                                
+                                # Add a visual separation
+                                hr(), 
                                 
                                 selectInput(inputId = "x1", 
                                             label = "X axis: ", 
@@ -95,6 +97,9 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Number of Votes" = "numberOfVotes"),
                                             selected = "numberOfVotes"),
                                 
+                                # Add a visual separation
+                                hr(), 
+                                
                                 selectInput(inputId = "facet1", 
                                             label = "Facet: ", 
                                             choices = c("Genre" = "genre",
@@ -103,6 +108,9 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Rating Bin" = "ratingBin"),
                                             selected = "runtimeBin"),
                                 
+                                # Add a visual separation 
+                                hr(), 
+                                
                                 selectInput(inputId = "color1", 
                                             label = "Color: ", 
                                             choices = c("Genre" = "genre",
@@ -110,6 +118,9 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Runtime Bin" = "runtimeBin",
                                                         "Rating Bin" = "ratingBin"),
                                             selected = "genre"), 
+                                
+                                # Add a visual separation
+                                hr(), 
                                 
                                 sliderInput(inputId = "size1",
                                             label = "Size: ",
@@ -139,9 +150,8 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 br(), br(), 
                                 
-                                plotOutput(outputId = "plot1"), 
-                                              # brush = "plot1_brush_coord"), 
-                                              # temporarily disabled the brush feature in the second plot
+                                plotOutput(outputId = "plot1",
+                                           brush = "plot1_brush_coord"),
                                 
                                 # Add a visual separation
                                 hr(), 
@@ -182,7 +192,9 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 actionButton(inputId = "show_title2",
                                              label = "Show"),
-                                br(), br(), 
+                                
+                                # Add a visual separation
+                                hr(),  
                                 
                                 selectInput(inputId = "x2", 
                                             label = "X axis: ", 
@@ -206,6 +218,9 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Release Bin" = "releaseBin",
                                                         "Runtime Bin" = "runtimeBin",
                                                         "Rating Bin" = "ratingBin")),
+
+                                # Add a visual separation
+                                hr(), 
                                 
                                 # Select genre
                                 selectInput(inputId = "genre2",
@@ -238,6 +253,9 @@ ui <- navbarPage(title = "Movie Browser",
                                             selectize = TRUE, 
                                             selected = 7, 
                                             multiple = TRUE), 
+                                
+                                # Add a visual separation
+                                hr(), 
                                 
                                 sliderInput(inputId = "size2",
                                             label = "Size: ",
@@ -360,9 +378,11 @@ server <- function(input, output, session) {
   
   # Temp Brush Plot
   output$plot_brush_temp1 <- renderPlot({
+    req(input$plot1_brush_coord)
     brushedPoints(test, input$plot1_brush_coord) %>% 
       ggplot(aes(x = rating, y = release)) + 
-      geom_point()
+      geom_point(size = input$size1,
+                 alpha = input$alpha1)
   })
   
   
