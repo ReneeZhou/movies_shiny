@@ -5,7 +5,6 @@ library(rlang)
 library(DT)
 library(plotly)
 library(htmlwidgets)
-library(tools)
 
 
 # Objects -----------------------------------------------------------------
@@ -57,6 +56,9 @@ runtime_var <- levels(droplevels(unique(test$runtimeBin)))
 rating_var <- levels(droplevels(unique(test$ratingBin)))
 
 
+# Clean up colnames for labels
+clean_label <- function(x) {str_replace_all(x, "([:upper:])", " \\1") %>% str_to_title}
+
 
 # UI ----------------------------------------------------------------------
 ui <- navbarPage(title = "Movie Browser", 
@@ -78,7 +80,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 actionButton(inputId = "show_title1",
                                              label = "Show"),
                                 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(), 
                                 
                                 selectInput(inputId = "x1", 
@@ -97,7 +99,7 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Number of Votes" = "numberOfVotes"),
                                             selected = "numberOfVotes"),
                                 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(), 
                                 
                                 selectInput(inputId = "facet1", 
@@ -108,7 +110,7 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Rating Bin" = "ratingBin"),
                                             selected = "runtimeBin"),
                                 
-                                # Add a visual separation 
+                                # Visual separation 
                                 hr(), 
                                 
                                 selectInput(inputId = "color1", 
@@ -119,7 +121,7 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Rating Bin" = "ratingBin"),
                                             selected = "genre"), 
                                 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(), 
                                 
                                 sliderInput(inputId = "size1",
@@ -139,21 +141,28 @@ ui <- navbarPage(title = "Movie Browser",
                               
                               mainPanel(
                                 
+                                br(), 
+                                
                                 plotOutput(outputId = "facetted_plot1"),
                                 
                                 br(),  
                                 
-                               
                                 # Explanatory text
                                 uiOutput(outputId = "text1"),
                                 
+                                hr(), 
+                                
+                                # Static explanatory text
+                                HTML(paste0("You can select a region below
+                                            (and drag it around) to have further
+                                            investigation on the data set.")),
                                 
                                 br(), br(), 
                                 
                                 plotOutput(outputId = "plot1",
                                            brush = "plot1_brush_coord"),
                                 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(), 
                                 
                                 # Explanatory text
@@ -193,7 +202,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 actionButton(inputId = "show_title2",
                                              label = "Show"),
                                 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(),  
                                 
                                 selectInput(inputId = "x2", 
@@ -219,7 +228,7 @@ ui <- navbarPage(title = "Movie Browser",
                                                         "Runtime Bin" = "runtimeBin",
                                                         "Rating Bin" = "ratingBin")),
 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(), 
                                 
                                 # Select genre
@@ -254,7 +263,7 @@ ui <- navbarPage(title = "Movie Browser",
                                             selected = 7, 
                                             multiple = TRUE), 
                                 
-                                # Add a visual separation
+                                # Visual separation
                                 hr(), 
                                 
                                 sliderInput(inputId = "size2",
@@ -273,12 +282,17 @@ ui <- navbarPage(title = "Movie Browser",
                               
                               mainPanel(
                                 
+                                br(), 
+                                
                                 plotOutput(outputId = "facetted_plot2"),
                                 
                                 br(), 
                                 
                                 # Explanatory text
                                 uiOutput(outputId = "text2"),
+                                
+                                # Visual separation
+                                hr(), 
                                 
                                 plotOutput(outputId = "plot2")
                                 
@@ -335,14 +349,14 @@ server <- function(input, output, session) {
   # by referring to the same action button Id in reactive values
   update_top_plot_title1 <- eventReactive(
     input$show_title1, {
-      toTitleCase(input$plot_title_top1)
+      str_to_title(input$plot_title_top1)
     },
     ignoreNULL = FALSE
   )
   
   update_bottom_plot_title1 <- eventReactive(
     input$show_title1, {
-      toTitleCase(input$plot_title_bottom1)
+      str_to_title(input$plot_title_bottom1)
     },
     ignoreNULL = FALSE
   )
@@ -390,14 +404,14 @@ server <- function(input, output, session) {
   # Update plot title when action button is clicked
   update_top_plot_title2 <- eventReactive(
     input$show_title2, {
-      toTitleCase(input$plot_title_top2)
+      str_to_title(input$plot_title_top2)
     },
     ignoreNULL = FALSE
   )
   
   update_bottom_plot_title2 <- eventReactive(
     input$show_title2, {
-      toTitleCase(input$plot_title_bottom2)
+      str_to_title(input$plot_title_bottom2)
     },
     ignoreNULL = FALSE
   )
@@ -418,11 +432,8 @@ server <- function(input, output, session) {
            '"', input$facet2, '".')
   })
   
-  
+  # Will only draw plot background when filter result is no points
   output$plot2 <- renderPlot({
-    # Make sure values are valuable otherwise raise a silence
-    req(input$genre2, input$release2, input$rating2, input$size2)
-    
     test %>% 
       # Here might cause no points to be plotted - 
       # add a table or think about the alternative 
@@ -432,7 +443,7 @@ server <- function(input, output, session) {
              ratingBin %in% input$rating2) %>% 
       ggplot(aes_string(x = input$x2, y = input$y2)) +
       geom_point(size = input$size2, 
-                 alpha = input$alpha2) +
+                 alpha = input$alpha2) + 
       labs(title = update_bottom_plot_title2())
   })
   
