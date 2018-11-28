@@ -178,7 +178,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 br(), br(), 
                                 
-                                plotOutput(outputId = "plot_brush_temp1")
+                                plotOutput(outputId = "plot_brush1")
                               )
                             )
                           )
@@ -371,7 +371,9 @@ server <- function(input, output, session) {
       # think about the below - hasn't worked yet 
       # facet_wrap(eval(expr(~ !!ensym(input$facet1)))) 
       # https://stackoverflow.com/questions/21588096/pass-string-to-facet-grid-ggplot2
-      labs(title = update_top_plot_title1()) 
+      labs(title = update_top_plot_title1(), 
+           x = clean_label(input$x1),
+           y = clean_label(input$y1)) 
   })
   
   # Explanatory test
@@ -387,16 +389,20 @@ server <- function(input, output, session) {
       geom_point(size = input$size1, 
                  alpha = input$alpha1, 
                  position = "jitter") +
-      labs(title = update_bottom_plot_title1()) 
+      labs(title = update_bottom_plot_title1(),
+           x = clean_label(input$x1), 
+           y = clean_label(input$y1)) 
   })
   
-  # Temp Brush Plot
-  output$plot_brush_temp1 <- renderPlot({
+  # Brush Plot
+  output$plot_brush1 <- renderPlot({
     req(input$plot1_brush_coord)
     brushedPoints(test, input$plot1_brush_coord) %>% 
-      ggplot(aes(x = rating, y = release)) + 
+      ggplot(aes_string(x = input$x1, y = input$y1)) + 
       geom_point(size = input$size1,
-                 alpha = input$alpha1)
+                 alpha = input$alpha1) +
+      labs(x = clean_label(input$x1),
+           y = clean_label(input$y1))
   })
   
   
@@ -423,7 +429,9 @@ server <- function(input, output, session) {
       geom_point(size = input$size2, 
                  alpha = input$alpha2) +
       facet_wrap(reformulate(input$facet2)) +
-      labs(title = update_top_plot_title2())
+      labs(title = update_top_plot_title2(),
+           x = clean_label(input$x2),
+           y = clean_label(input$y2))
   })
   
   # Explanatory text
@@ -444,7 +452,9 @@ server <- function(input, output, session) {
       ggplot(aes_string(x = input$x2, y = input$y2)) +
       geom_point(size = input$size2, 
                  alpha = input$alpha2) + 
-      labs(title = update_bottom_plot_title2())
+      labs(title = update_bottom_plot_title2(),
+           x = clean_label(input$x2),
+           y = clean_label(input$y2))
   })
   
   
