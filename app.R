@@ -378,9 +378,9 @@ server <- function(input, output, session) {
   
   # Explanatory test
   output$text1 <- renderUI({paste0("The plot above is facetted on ", 
-                                   '"', input$facet1, '"',
+                                   '"', clean_label(input$facet1), '"',
                                    " whereas the plot below combines facets and shows ",  
-                                   '"', input$color1, '"', 
+                                   '"', clean_label(input$color1), '"', 
                                    " by colors.")})
   
   output$plot1 <- renderPlot({
@@ -437,7 +437,7 @@ server <- function(input, output, session) {
   # Explanatory text
   output$text2 <- renderUI({
     paste0("The above plot is faceted on ",
-           '"', input$facet2, '".')
+           '"', clean_label(input$facet2), '".')
   })
   
   # Will only draw plot background when filter result is no points
@@ -477,6 +477,7 @@ server <- function(input, output, session) {
   output$movietable3 <- DT::renderDataTable(
     DT::datatable(
       data = test,
+      colnames = clean_label(colnames(test)), 
       options = list(bLengthChange = FALSE, # Removes the pageLength drop down
                      pageLength = n_rows_to_show())
     )
@@ -487,6 +488,7 @@ server <- function(input, output, session) {
   output$movietable4 <- DT::renderDataTable(
     DT::datatable(
       data = test,
+      colnames = clean_label(colnames(test)), 
       options = list(
         pageLength = 20
       )
@@ -500,7 +502,7 @@ server <- function(input, output, session) {
       slice(indicies) %>% 
       ggplot(aes(x = rating, y = numberOfVotes, 
                  color = ratingBin, shape = runtimeBin)) +
-      geom_point(size = 4)
+      geom_point(size = 4) 
     ggplotly(p)
   })
   
