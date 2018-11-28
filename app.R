@@ -233,7 +233,7 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 # Select genre
                                 selectInput(inputId = "genre2",
-                                            label = "Select Genre:",
+                                            label = "Select genre:",
                                             choices = genre_var,
                                             selected = "Drama", 
                                             selectize = TRUE,
@@ -247,14 +247,6 @@ ui <- navbarPage(title = "Movie Browser",
                                             selectize = TRUE, 
                                             multiple = TRUE),
                                 
-                                # Select runtime bin 
-                                selectInput(inputId = "runtime2", 
-                                            label = "Select runtime interval: ",
-                                            choices = runtime_var,
-                                            selected = 90, 
-                                            selectize = TRUE, 
-                                            multiple = TRUE),
-                                
                                 # Select rating bin
                                 selectInput(inputId = "rating2", 
                                             label = "Select rating interval: ",
@@ -262,6 +254,26 @@ ui <- navbarPage(title = "Movie Browser",
                                             selectize = TRUE, 
                                             selected = 7, 
                                             multiple = TRUE), 
+                                
+                                # Select runtime bin 
+                                # selectInput(inputId = "runtime2", 
+                                #             label = "Select runtime interval: ",
+                                #             choices = runtime_var,
+                                #             selected = 90, 
+                                #             selectize = TRUE, 
+                                #             multiple = TRUE),
+                                # Change runtime input to slider below
+                                
+                                # Select runtime interval
+                                sliderInput(inputId = "runtime2", 
+                                            label = "Select runtime range: ",
+                                            min = 45, 
+                                            max = 165,
+                                            value = c(90, 110)), 
+                                
+                                # Explanatory text
+                                HTML(paste0("You can drag the range around.")), 
+                                
                                 
                                 # Visual separation
                                 hr(), 
@@ -447,8 +459,8 @@ server <- function(input, output, session) {
       # add a table or think about the alternative 
       filter(genre %in% input$genre2,
              releaseBin %in% input$release2,
-             runtimeBin %in% input$runtime2,
-             ratingBin %in% input$rating2) %>% 
+             ratingBin %in% input$rating2,
+             between(runtime, input$runtime2[1], input$runtime2[2])) %>% 
       ggplot(aes_string(x = input$x2, y = input$y2)) +
       geom_point(size = input$size2, 
                  alpha = input$alpha2) + 
