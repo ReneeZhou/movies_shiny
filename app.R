@@ -5,6 +5,7 @@ library(rlang)
 library(DT)
 library(plotly)
 library(htmlwidgets)
+library(ggridges)
 
 
 # Objects -----------------------------------------------------------------
@@ -149,6 +150,16 @@ ui <- navbarPage(title = "Movie Browser",
                                 
                                 # Explanatory text
                                 uiOutput(outputId = "text1"),
+                                
+                                br(), 
+                                
+                                # Explanatory text for ridgeline plot
+                                HTML(paste0("The plot below is a ridgeline plot.")), 
+                                
+                                # Ridgeline plot 
+                                plotOutput(outputId = "ridgeline1"), 
+                                
+                                br(), 
                                 
                                 hr(), 
                                 
@@ -394,6 +405,15 @@ server <- function(input, output, session) {
                                    " whereas the plot below combines facets and shows ",  
                                    '"', clean_label(input$color1), '"', 
                                    " by colors.")})
+  
+  
+  # Ridgeline plot
+  output$ridgeline1 <- renderPlot({
+    test %>% 
+      ggplot(aes_string(x = input$x1, y = input$facet1)) +
+      geom_density_ridges()
+  })
+  
   
   output$plot1 <- renderPlot({
     test %>% 
