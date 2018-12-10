@@ -167,4 +167,4 @@ rm(unparsed_bit, basics, crew, ratings, movies_0, same100,
 
 
 # Save objects for other .R files -----------------------------------------
-save(movies, movies_crew, file = "objs")
+save(movies, movies_crew, file = "objs.rda")
