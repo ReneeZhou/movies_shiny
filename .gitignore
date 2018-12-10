@@ -39,3 +39,16 @@ rsconnect/
 title_basics.tsv
 title_crew.tsv
 title_ratings.tsv
+
+actor.rds
+actress.rds
+archive_footage.rds
+archive_sound.rds
+cinematographer.rds
+composer.rds
+director.rds
+editor.rds
+producer.rds
+production_designer.rds
+self.rds
+writer.rds
