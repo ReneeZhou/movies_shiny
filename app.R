@@ -9,7 +9,7 @@ library(ggridges)
 
 
 # Objects -----------------------------------------------------------------
-load("objs")
+load("objs.rda")
 
 
 # Test set ----------------------------------------------------------------
@@ -410,8 +410,9 @@ server <- function(input, output, session) {
   # Ridgeline plot
   output$ridgeline1 <- renderPlot({
     test %>% 
-      ggplot(aes_string(x = input$x1, y = input$facet1)) +
-      geom_density_ridges()
+      ggplot(aes_string(x = input$x1, y = input$color1)) +
+      geom_density_ridges() +
+      facet_wrap(reformulate(input$facet1))
   })
   
   
@@ -425,6 +426,7 @@ server <- function(input, output, session) {
            x = clean_label(input$x1), 
            y = clean_label(input$y1)) 
   })
+  
   
   # Brush Plot
   output$plot_brush1 <- renderPlot({
