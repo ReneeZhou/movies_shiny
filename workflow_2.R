@@ -1,5 +1,6 @@
-# Add in other data sets --------------------------------------------------
+# Packages ----------------------------------------------------------------
 library(tidyverse)
+library(htmlwidgets)
 
 
 # Read in data set --------------------------------------------------------
@@ -7,36 +8,17 @@ principals <- read_tsv("title_principals.tsv")
 
 
 # Divide principals data set according to category column -----------------
-# Have a look at the categories
-category <- principals %>% distinct(category)
+category_var <- unique(principals$category)
 
 
-# Division
-self <- principals %>% filter(category == "self")
-director <- principals %>% filter(category == "director")
-cinematographer <- principals %>% filter(category == "cinematographer")
-composer <- principals %>% filter(category == "composer")
-producer <- principals %>% filter(category == "producer")
-editor <- principals %>% filter(category == "editor")
-actor <- principals %>% filter(category == "actor")
-actress <- principals %>% filter(category == "actress")
-writer <- principals %>% filter(category == "writer")
-production_designer <- principals %>% filter(category == "production_designer")
-archive_footage <- principals %>% filter(category == "archive_footage")
-archive_sound <- principals %>% filter(category == "archive_sound")
+# Looping over category, and save it as a local file
+for (i in 1:length(category_var)) {
+  obj <- principals %>% filter(category == category_var[i])
+  nam <- category_var[i]
+  saveRDS(obj, file = paste0(nam, ".rds"))
+  rm(obj, nam, i)
+}
 
 
-# Remove the original, save and clean up the workspace
+# Remove the original data set to release memory
 rm(principals)
-save(self, file = "self")
-save(director, file = "director")
-save(cinematographer, file = "cinematographer")
-save(composer, file = "composer")
-save(producer, file = "producer")
-save(editor, file = "editor")
-save(actor, file = "actor")
-save(actress, file = "actress")
-save(writer, file = "writer")
-save(production_designer, file = "production_designer")
-save(archive_footage, file = "archive_footage")
-save(archive_sound, file = "archive_sound")
