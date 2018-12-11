@@ -1,9 +1,8 @@
 # Packages ----------------------------------------------------------------
 library(tidyverse)
-library(htmlwidgets)
 
 
-# Read in data set --------------------------------------------------------
+# Read in principals data set ---------------------------------------------
 principals <- read_tsv("title_principals.tsv")
 
 
@@ -11,7 +10,7 @@ principals <- read_tsv("title_principals.tsv")
 category_var <- unique(principals$category)
 
 
-# Looping over category, and save it as a local file
+# # Looping over each category to save as different files -----------------
 for (i in 1:length(category_var)) {
   obj <- principals %>% filter(category == category_var[i])
   nam <- category_var[i]
@@ -20,5 +19,11 @@ for (i in 1:length(category_var)) {
 }
 
 
-# Remove the original data set to release memory
+# Release memory ----------------------------------------------------------
 rm(principals)
+
+
+# Read in name data set ---------------------------------------------------
+name <- read_tsv("name_basics.tsv")
+name_example <- name %>% slice(1:100) # use this tibble to think about how to break name dataset
+rm(name)
