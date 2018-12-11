@@ -29,11 +29,28 @@ name_example <- name %>% slice(1:100) # use this tibble to think about how to br
 rm(name)
 
 
-# Loop in files
-for (i in 1:length(category_var)) { # can change length to load in a few files only
+# Loop to read in files
+# Basic cleaning - remove columns contain no extra info
+for (i in 1:length(category_var)) { 
+  # can change length to load in a few files only 
+  # use 11:12 as the smallest files
   nam <- category_var[i]
-  fil <- paste0(category_var[i], ".rds")
-  temp <- readRDS(fil)
-  assign(nam, temp)
-  rm(i, nam, fil, temp)
+  obj <- readRDS(paste0(nam, ".rds"))
+  if (length(unique(obj$job)) == 1) {
+    if (unique(obj$job) == "\\N") {
+      obj <- obj %>% 
+        select(-category, -job)
+    } 
+  } else {
+    obj <- obj %>% 
+      select(-category)
+  }
+  # Assign the namce accordingly
+  assign(nam, obj)
+  # Overwrite files
+  saveRDS(obj, file = paste0(nam, ".rds"))
+  # Remove redundant objs
+  rm(i, nam, obj)
 }
+
+
