@@ -27,3 +27,13 @@ rm(principals)
 name <- read_tsv("name_basics.tsv")
 name_example <- name %>% slice(1:100) # use this tibble to think about how to break name dataset
 rm(name)
+
+
+# Loop in files
+for (i in 1:length(category_var)) { # can change length to load in a few files only
+  nam <- category_var[i]
+  fil <- paste0(category_var[i], ".rds")
+  temp <- readRDS(fil)
+  assign(nam, temp)
+  rm(i, nam, fil, temp)
+}
