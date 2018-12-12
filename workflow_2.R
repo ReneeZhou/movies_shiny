@@ -36,22 +36,34 @@ for (i in 1:length(category_var)) {
   # can change length to load in a few files only 
   # use 11:12 as the smallest files
   nam <- category_var[i]
-  obj <- readRDS(paste0(nam, ".rds"))
+  obj <- readRDS(paste0("raw_", nam, ".rds"))
+  
   if (length(unique(obj$job)) == 1) {
     if (unique(obj$job) == "\\N") {
-      obj <- obj %>% 
-        select(-category, -job)
-    } 
+      if (length(unique(obj$characters)) == 1) {
+        if (unique(obj$characters) == "\\N") {
+          obj <- obj %>% 
+            select(-job, -characters, -category)
+        }
+      } else {
+        obj <- obj %>% 
+          select(-job, -category)
+      }
+    }
+  } else if (length(unique(obj$characters)) == 1) {
+      if (unique(obj$characters) == "\\N") {
+        obj <- obj %>% 
+          select(-characters, -category)
+    }
   } else {
     obj <- obj %>% 
       select(-category)
   }
+  
   # Assign the namce accordingly
   assign(nam, obj)
   # Overwrite files
-  saveRDS(obj, file = paste0(nam, ".rds"))
+  saveRDS(obj, file = paste0("clean_", nam, ".rds"))
   # Remove redundant objs
   rm(i, nam, obj)
 }
-
-
