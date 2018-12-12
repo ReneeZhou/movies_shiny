@@ -8,13 +8,14 @@ principals <- read_tsv("title_principals.tsv")
 
 # Divide principals data set according to category column -----------------
 category_var <- unique(principals$category)
+saveRDS(category_var, file = "category_var.rds")
 
 
 # # Looping over each category to save as different files -----------------
 for (i in 1:length(category_var)) {
   obj <- principals %>% filter(category == category_var[i])
   nam <- category_var[i]
-  saveRDS(obj, file = paste0(nam, ".rds"))
+  saveRDS(obj, file = paste0("raw_", nam, ".rds"))
   rm(obj, nam, i)
 }
 
