@@ -24,12 +24,6 @@ for (i in 1:length(category_var)) {
 rm(principals)
 
 
-# Read in name data set ---------------------------------------------------
-name <- read_tsv("name_basics.tsv")
-name_example <- name %>% slice(1:100) # use this tibble to think about how to break name dataset
-rm(name)
-
-
 # Loop to read in files
 # Basic cleaning - remove columns contain no extra info
 for (i in 1:length(category_var)) { 
