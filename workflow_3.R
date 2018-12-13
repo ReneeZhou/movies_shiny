@@ -13,13 +13,14 @@ name_profession <- name %>%
   rename(name = primaryName, profession = primaryProfession) %>% 
   filter(!is.na(profession)) %>% # Removed NAs
   # NA is different from char string "NA"
-  separate_rows(profession, sep = ",")
+  separate_rows(profession, sep = ",") 
 
 
 name_known <- name %>% 
   select(nconst, primaryName, knownForTitles) %>% 
   rename(name = primaryName, known = knownForTitles) %>% 
-  
+  # this line to check if there's NAs in known col - if so, remove them
+  # separate_rows(known, sep = ",") # this will expand the rectangle a lot
 
 
 name_age <- name %>% 
