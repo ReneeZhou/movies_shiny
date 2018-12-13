@@ -11,12 +11,15 @@ name_example <- name %>% slice(1:100) # example data set
 name_profession <- name %>% 
   select(nconst, primaryName, primaryProfession) %>% 
   rename(name = primaryName, profession = primaryProfession) %>% 
+  filter(!is.na(profession)) %>% # Removed NAs
+  # NA is different from char string "NA"
   separate_rows(profession, sep = ",")
 
 
 name_known <- name %>% 
   select(nconst, primaryName, knownForTitles) %>% 
-  rename(name = primaryName, known = knownForTitles)
+  rename(name = primaryName, known = knownForTitles) %>% 
+  
 
 
 name_age <- name %>% 
@@ -25,3 +28,9 @@ name_age <- name %>%
 
 
 rm(name) 
+
+
+# Exploration -------------------------------------------------------------
+prof_count <- name_profession %>% count(profession) %>% arrange(desc(n))
+prof_count %>% ggplot(aes(x = n, y = reorder(profession, n))) +
+  geom_point()
