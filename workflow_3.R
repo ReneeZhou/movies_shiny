@@ -57,4 +57,6 @@ name_age_arrange <- name_age %>%
   arrange(age)
 
 name_age_arrange %>% ggplot(aes(x = age)) +
-  geom_bar()
+  geom_bar() +
+  labs(x = "Age", y = "Count")
+  # In a bell shape
