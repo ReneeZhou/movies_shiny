@@ -36,9 +36,15 @@ rm(name)
 
 
 # Exploration -------------------------------------------------------------
-prof_count <- name_profession %>% count(profession) %>% arrange(desc(n))
+prof_count <- name_profession %>% 
+  count(profession) %>% 
+  arrange(desc(n)) %>% 
+  mutate(profession = str_to_title(str_replace_all(profession, "_", " "))) 
+  # Clean the label beforehand
+
 prof_count %>% ggplot(aes(x = n, y = reorder(profession, n))) +
-  geom_point()
+  geom_point() +
+  labs(x = "Count", y = "Professions")
 
 
 name_age_arrange <- name_age %>%
