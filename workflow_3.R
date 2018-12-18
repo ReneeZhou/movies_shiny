@@ -30,6 +30,17 @@ name_age <- name %>%
   mutate(birth = as.integer(birth), death = as.integer(death), 
          age = death - birth) %>% 
   filter(!is.na(birth), !is.na(death), !is.na(age))
+
+
+name_age <- name_age %>%
+  arrange(desc(age)) %>% 
+  {.[1,4] <- 1865; .[1,5] <- 53; . } %>% # if without . at the very end, it won't save the entire tibble
+  # Corrected data value after some research
+  # name_age %>%  {.[1,4] <- 1865; .} is equivalent to 
+  # name_age %T>% {.[1,4] <- 1865} magrittr tree operator
+  filter(age > 0) %>% # remove negative age and age 0
+  arrange(age)
+
   
 
 rm(name) 
@@ -46,16 +57,6 @@ prof_count <- name_profession %>%
 prof_count %>% ggplot(aes(x = n, y = reorder(profession, n))) +
   geom_point() +
   labs(x = "Count", y = "Professions")
-
-
-name_age <- name_age %>%
-  arrange(desc(age)) %>% 
-  {.[1,4] <- 1865; .[1,5] <- 53; . } %>% # if without . at the very end, it won't save the entire tibble
-  # Corrected data value after some research
-  # name_age %>%  {.[1,4] <- 1865; .} is equivalent to 
-  # name_age %T>% {.[1,4] <- 1865} magrittr tree operator
-  filter(age > 0) %>% # remove negative age and age 0
-  arrange(age)
 
 
 name_age %>% ggplot(aes(x = age)) +
