@@ -53,6 +53,7 @@ rm(name)
 
 
 # Exploration -------------------------------------------------------------
+# Distribution of different prfessions
 prof_count <- name_profession %>% 
   count(profession) %>% 
   arrange(desc(n)) %>% 
@@ -65,6 +66,7 @@ prof_count %>% ggplot(aes(x = n, y = reorder(profession, n))) +
   labs(x = "Count", y = "Professions")
 
 
+# Distribution of age of all professions
 name_age %>% ggplot(aes(x = age)) +
   geom_bar() +
   labs(x = "Age", y = "Count")
