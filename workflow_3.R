@@ -42,6 +42,12 @@ name_age <- name_age %>%
   arrange(age)
 
   
+# Save data sets as local files
+write_rds(name_age, path = "name_age.rds", compress = "gz")
+write_rds(name_known, path = "name_known_for_title.rds", compress = "gz")
+write_rds(name_profession, path = "name_profession.rds", compress = "gz")
+write_rds(name_example, path = "name_test.rds", compress = "gz")
+
 
 rm(name) 
 
