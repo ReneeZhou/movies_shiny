@@ -63,11 +63,24 @@ prof_count <- name_profession %>%
 
 prof_count %>% ggplot(aes(x = n, y = reorder(profession, n))) +
   geom_point() +
-  labs(x = "Count", y = "Professions")
+  labs(title = "Number of Professions", x = "Number", y = "Professions")
 
 
 # Distribution of age of all professions
 name_age %>% ggplot(aes(x = age)) +
   geom_bar() +
-  labs(x = "Age", y = "Count")
+  labs(title = "Age Distribution of All Professions", x = "Age", y = "Number")
   # In a bell shape
+
+
+# Age distribution of different professions
+age_profession <- name_profession %>% 
+  left_join(name_age, by = c("nconst", "name")) %>% 
+  filter(!is.na(age)) %>% 
+  mutate(profession = str_to_title(str_replace_all(profession, "_", " ")))
+  
+age_by_profession %>% 
+  ggplot(aes(x = age)) +
+  geom_histogram() +
+  facet_wrap(~ profession, scales = "free_y") +
+  labs(title = "Age Distribution by Profession", x = "Age", y = "Number")
