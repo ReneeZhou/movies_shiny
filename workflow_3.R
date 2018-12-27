@@ -88,9 +88,22 @@ age_by_profession %>%
 
 # Heatmap to display age distribution
 # Production designer as an example
-age_profession %>% 
+age_profession <- name_profession %>% 
+  left_join(name_age, by = c("nconst", "name")) %>% 
+  filter(!is.na(age)) %>% 
+  mutate(profession = str_to_title(str_replace_all(profession, "_", " ")),
+         mid = (birth + death)/2)
+
+
+heatmap_production_designer <- age_profession %>% 
   filter(profession == "Production Designer") %>% 
   ggplot(aes(x = mid, y = age, fill = ..density..)) +
   stat_density_2d(geom = "tile", contour = FALSE) +
-  scale_fill_viridis_c(option = "E") 
+  scale_fill_viridis_c(option = "E") +
+  labs(title = "Production Designer Age Distribution", 
+       x = "Median of Birth & Death", 
+       y = "Age")
  
+
+ggsave(plot = heatmap_production_designer, filename = "heatmap_production_designer.png", 
+       path = "~/movies_shiny/plot/")
