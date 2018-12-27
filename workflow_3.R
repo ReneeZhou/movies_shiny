@@ -84,3 +84,13 @@ age_by_profession %>%
   geom_histogram() +
   facet_wrap(~ profession, scales = "free_y") +
   labs(title = "Age Distribution by Profession", x = "Age", y = "Number")
+
+
+# Heatmap to display age distribution
+# Production designer as an example
+age_profession %>% 
+  filter(profession == "Production Designer") %>% 
+  ggplot(aes(x = mid, y = age, fill = ..density..)) +
+  stat_density_2d(geom = "tile", contour = FALSE) +
+  scale_fill_viridis_c(option = "E") 
+ 
