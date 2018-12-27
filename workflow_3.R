@@ -104,6 +104,27 @@ heatmap_production_designer <- age_profession %>%
        x = "Median of Birth & Death", 
        y = "Age")
  
-
+# Save ggplot as a local object
 ggsave(plot = heatmap_production_designer, filename = "heatmap_production_designer.png", 
        path = "~/movies_shiny/plot/")
+
+
+# For loop for creating heatmaps for each profession
+for (i in 1:ceiling(length(unique(age_profession$profession))/4)) {
+  var <- levels(factor(age_profession$profession))
+  ind <- c((4*i-3):(4*i))
+  
+  gg <- age_profession %>% 
+    filter(profession %in% var[ind]) %>% 
+    ggplot(aes(x = age, y = mid, ymin = birth, ymax = death)) +
+    geom_linerange(position = "jitter", alpha = 0.1) +
+    geom_point(color = "blue", alpha = 0.2) +
+    facet_wrap(~profession, scales = "free", ncol = 2) +
+    labs(title = "Age Lenth Distribution by Profession", x = "Age", y = "Year") +
+    coord_flip()
+  
+  print(gg)
+  
+  rm(i, var, ind, gg)
+}
+
