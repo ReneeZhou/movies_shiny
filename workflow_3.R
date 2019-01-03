@@ -89,36 +89,17 @@ age_by_profession %>%
 
 # Heatmap to display age distribution
 # Production designer as an example
-heatmap_production_designer <- age_profession %>% 
-  filter(profession == "Production Designer") %>% 
-  ggplot(aes(x = mid, y = age, fill = ..density..)) +
-  stat_density_2d(geom = "tile", contour = FALSE) +
-  scale_fill_viridis_c(option = "E") +
-  labs(title = "Production Designer Age Distribution", 
+age_heatmap <- age_profession %>% 
+  filter(profession != "Legal") %>% # Remove Legal in the plot since there's only 1 obs and will cause density = 1
+  ggplot(aes(x = mid, y = age)) +
+  stat_density_2d(geom = "raster", aes(fill = stat(ndensity)), contour = FALSE) +
+  facet_wrap(~profession, scales = "free") +
+  scale_fill_viridis_c(option = "B", name = "Density") + 
+  labs(title = "Age Heatmap by Profession", 
        x = "Median of Birth & Death", 
        y = "Age")
+
  
 # Save ggplot as a local object
-ggsave(plot = heatmap_production_designer, filename = "heatmap_production_designer.png", 
+ggsave(plot = age_heatmap, filename = "age_heatmap_B.png", 
        path = "~/movies_shiny/plot/")
-
-
-# For loop for creating heatmaps for each profession
-for (i in 1:ceiling(length(unique(age_profession$profession))/4)) {
-  var <- levels(factor(age_profession$profession))
-  ind <- c((4*i-3):(4*i))
-  
-  gg <- age_profession %>% 
-    filter(profession %in% var[ind]) %>% 
-    ggplot(aes(x = age, y = mid, ymin = birth, ymax = death)) +
-    geom_linerange(position = "jitter", alpha = 0.1) +
-    geom_point(color = "blue", alpha = 0.2) +
-    facet_wrap(~profession, scales = "free", ncol = 2) +
-    labs(title = "Age Lenth Distribution by Profession", x = "Age", y = "Year") +
-    coord_flip()
-  
-  print(gg)
-  
-  rm(i, var, ind, gg)
-}
-
