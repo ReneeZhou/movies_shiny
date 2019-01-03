@@ -91,12 +91,12 @@ age_by_profession %>%
 # Production designer as an example
 age_heatmap <- age_profession %>% 
   filter(profession != "Legal") %>% # Remove Legal in the plot since there's only 1 obs and will cause density = 1
-  ggplot(aes(x = mid, y = age)) +
+  ggplot(aes(x = birth, y = age)) +
   stat_density_2d(geom = "raster", aes(fill = stat(ndensity)), contour = FALSE) +
   facet_wrap(~profession, scales = "free") +
   scale_fill_viridis_c(option = "B", name = "Density") + 
   labs(title = "Age Heatmap by Profession", 
-       x = "Median of Birth & Death", 
+       x = "Birth", 
        y = "Age")
 
  
