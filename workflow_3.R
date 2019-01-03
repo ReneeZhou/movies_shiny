@@ -77,8 +77,9 @@ name_age %>% ggplot(aes(x = age)) +
 age_profession <- name_profession %>% 
   left_join(name_age, by = c("nconst", "name")) %>% 
   filter(!is.na(age)) %>% 
-  mutate(profession = str_to_title(str_replace_all(profession, "_", " ")))
-  
+  mutate(profession = str_to_title(str_replace_all(profession, "_", " ")),
+         mid = (birth + death)/2)
+
 age_by_profession %>% 
   ggplot(aes(x = age)) +
   geom_histogram() +
@@ -88,13 +89,6 @@ age_by_profession %>%
 
 # Heatmap to display age distribution
 # Production designer as an example
-age_profession <- name_profession %>% 
-  left_join(name_age, by = c("nconst", "name")) %>% 
-  filter(!is.na(age)) %>% 
-  mutate(profession = str_to_title(str_replace_all(profession, "_", " ")),
-         mid = (birth + death)/2)
-
-
 heatmap_production_designer <- age_profession %>% 
   filter(profession == "Production Designer") %>% 
   ggplot(aes(x = mid, y = age, fill = ..density..)) +
